@@ -24,6 +24,7 @@ import { Icon } from 'react-native-elements'
 // import Countries from './Components/Countries'
 import Worldstats from './Components/Worldstats'
 import SplashScreen from './Components/Splashscreen'
+import MyTabs2 from './Components/Favourities';
 import MyTabs from './Components/Countries';
 
 
@@ -33,7 +34,7 @@ class Nav extends React.Component{
     return (
         <NavigationContainer>
         <Tab.Navigator
-            initialRouteName="Countries"
+            initialRouteName="World"
             activeColor='white'
             inactiveColor='gray'
             shifting={true}
@@ -61,6 +62,17 @@ class Nav extends React.Component{
                 ),
               }}
           />
+
+            <Tab.Screen
+
+                name="Favourities" component={MyTabs2}
+                options={{
+                    tabBarColor:'#f8ca41',
+                    tabBarIcon: ({ color }) => (
+                        <Icon name="star" type="ionicon" size={25}  color="white" />
+                    ),
+                }}
+            />
         </Tab.Navigator>
         </NavigationContainer>
     );

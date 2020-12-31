@@ -40,16 +40,15 @@ class Countrystats extends React.Component{
             name:this.props.route.params.name.toString(),
             star:'star-outline',
             dbdata:null,
-            fetcheddata:''
         }
 
     }
 
 
-    async storeData (){
+    async storeData (data){
         try {
-            const jsonValue = JSON.stringify(this.state.dbdata)
-            await AsyncStorage.setItem('favourities', jsonValue)
+
+            await AsyncStorage.setItem('favourities', data)
         } catch (e) {
             // saving error
         }
@@ -59,43 +58,53 @@ class Countrystats extends React.Component{
     }
      starclick()
     {
-        let favourities=new Array();
-        let data=this.state.dbdata;
-        if(this.state.dbdata===null || this.state.dbdata===[])
-        {
 
-            favourities.push(this.state.name);
+
+        let data=this.state.dbdata;
+
+        if(data===null)
+        {
             this.setState({
-                dbdata:favourities,
+                dbdata:this.state.name,
                 star:'star'
+
             })
 
+            this.storeData(data);
 
         }
         else
         {
-            // console.log(typeof data)
-
-            if(data.includes(this.state.name))
+            if(data.includes(this.state.name.replace(/\s/g, "")))
             {
-                const index = data.indexOf(this.state.name)
-                if (index > -1) {
+                console.log(data)
+                let arr= data.split(",");
+                let index=arr.indexOf(this.state.name)
+                arr.splice(index,1);
+                data=arr.toString();
                     this.setState({
                         star:'star-outline',
-                        dbdata:data.splice(index,1)
+                        dbdata:data
                     })
-                }
+
+                this.storeData(data);
+
 
             }
             else
             {
+                data=`${data},${this.state.name}`
                 this.setState({
-                    dbdata:data.push(this.state.name),
+                    dbdata:data,
                     star:'star'
                 })
+                this.storeData(data);
+
+
+
             }
         }
-        this.storeData();
+
 
     }
 
@@ -104,18 +113,19 @@ class Countrystats extends React.Component{
     async  getData () {
         try {
             // this.clearAsyncStorage()
+
             let jsonValue = await AsyncStorage.getItem('favourities')
+            console.log(jsonValue)
             if(jsonValue.includes(this.state.name))
             {
                 this.setState({
                     star:'star'
                 })
             }
-            console.log(typeof JSON.parse(jsonValue))
             if(jsonValue!==null)
             {
                 this.setState({
-                    dbdata:JSON.parse(jsonValue)
+                    dbdata:jsonValue,
                 })
             }
         } catch(e) {
